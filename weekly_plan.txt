@@ -1,0 +1,53 @@
+# WeeklyPlanEA plan file - week 2026-W48 (Mon 23 - Fri 27 Nov 2026)
+# Written by Claude. ALL TIMES ARE UTC (Tallinn = UTC+2). One record per line.
+# In text fields, '_' means a space. Lines starting with '#' are ignored.
+#
+# Thesis: USD rally is 4 weeks old and crowded (EUR crowded short, JPY crowded long,
+# AUD crowded short). A December Fed hike is nearly fully priced. Wednesday's core PCE
+# decides the direction: soft = dollar reversal, hot = continuation. US Thanksgiving
+# Thursday, early close Friday = thin liquidity, small size.
+
+PLAN ver=2026W48-01 week=2026-W48 made=2026-11-23T02:45 expires=2026-11-30T00:00 flat=2026-11-27T17:30 note=USD_trend_mature_and_crowded._Wed_PCE_decides._Thin_holiday_liquidity_Thu-Fri.
+
+# Risk: % per trade, weekly stop %, max new trades per day, news filter, spread filter
+RISK pct=0.5 weekstop=2.0 maxday=3 news=HIGH newsmin=15 spreadx=3
+
+# Correlated groups: total open risk % allowed per group
+GROUP id=USDSHORT cap=1.0
+GROUP id=USDLONG cap=1.0
+GROUP id=JPY cap=0.5
+GROUP id=AUD cap=0.5
+
+# Size multiplier and max new trades per day (UTC date)
+DAY date=2026-11-23 mult=0.5 max=3
+DAY date=2026-11-24 mult=0.5 max=3
+DAY date=2026-11-25 mult=1.0 max=3
+DAY date=2026-11-26 mult=0.25 max=1
+DAY date=2026-11-27 mult=0.25 max=1
+
+# Scenario tracks. BASE = before the data. The EA switches them itself from the MT5 calendar.
+TRACK name=USD active=BASE
+TRACK name=AUD active=BASE
+
+# Calendar triggers: the EA reads the actual value and switches the track.
+# match: words that must all be in the event name ('+' joins, '~' = must NOT contain)
+TRIGGER id=PCE track=USD country=US match=core+pce+m/m soft=0.2 hot=0.4 ifsoft=SOFT ifmid=INLINE ifhot=HOT flatbefore=15
+TRIGGER id=AUCPI track=AUD country=AU match=cpi+y/y+~trimmed+~mean+~weighted soft=4.7 hot=5.1 ifsoft=SOFT ifmid=INLINE ifhot=HOT flatbefore=0
+
+# Setups. trig: BREAK = H4 close beyond lvl; REJECT = price enters zone zlo-zhi and an H1
+# candle closes back out in the trade direction; NOW = arm as soon as the scenario is active.
+# Entry is always the first unmitigated 30-minute order block after the trigger.
+# inv + invtf = candle close that kills the idea. tp1 = take half and move stop to entry.
+# If tp1/tp2 are missing, the EA uses 1.5R and 3R.
+SETUP id=EU_A track=USD scen=SOFT sym=EURUSD dir=BUY trig=BREAK lvl=1.1000 inv=1.0953 invtf=H4 tp1=1.1035 tp2=1.1090 grp=USDSHORT rm=1 window=24
+SETUP id=EU_B track=USD scen=HOT sym=EURUSD dir=SELL trig=BREAK lvl=1.0953 inv=1.1000 invtf=H4 tp1=1.0900 tp2=1.0850 grp=USDLONG rm=1 window=24
+SETUP id=GU_A track=USD scen=BASE,SOFT,INLINE sym=GBPUSD dir=BUY trig=REJECT zlo=1.3080 zhi=1.3110 inv=1.3100 invtf=D1 tp1=1.3200 tp2=1.3300 grp=USDSHORT rm=1 window=24
+SETUP id=UJ_S track=USD scen=ALL sym=USDJPY dir=SELL trig=REJECT zlo=159.80 zhi=160.50 inv=160.60 invtf=H1 tp1=158.80 tp2=157.50 grp=JPY rm=0.5 window=24
+SETUP id=XAU_L track=USD scen=BASE,SOFT,INLINE sym=XAUUSD dir=BUY trig=REJECT zlo=3447 zhi=3500 inv=3440 invtf=D1 tp1=3650 tp2=3750 grp=USDSHORT rm=1 hold=48 window=24
+SETUP id=UC_L track=USD scen=BASE,INLINE,HOT sym=USDCAD dir=BUY trig=REJECT zlo=1.4280 zhi=1.4310 inv=1.4250 invtf=H4 tp1=1.4400 tp2=1.4480 grp=USDLONG rm=0.5 window=24
+SETUP id=AU_L track=AUD scen=HOT sym=AUDUSD dir=BUY trig=NOW grp=AUD rm=0.5 window=12
+SETUP id=AU_S track=AUD scen=SOFT sym=AUDUSD dir=SELL trig=NOW grp=AUD rm=0.5 window=12
+
+# Tripwires for unscheduled shocks: move in price units within N minutes -> flat symbol, block hours
+TRIP id=JPY_INT sym=USDJPY dir=DOWN move=1.50 min=5 block=24
+TRIP id=XAU_SPIKE sym=XAUUSD dir=ANY move=60 min=5 block=4
