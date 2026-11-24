@@ -6,8 +6,10 @@
 # AUD crowded short). A December Fed hike is nearly fully priced. Wednesday's core PCE
 # decides the direction: soft = dollar reversal, hot = continuation. US Thanksgiving
 # Thursday, early close Friday = thin liquidity, small size.
+# Upd 24 Nov: EURUSD broke 1.0953 to 2026 low 1.0884 (France PMI) -> EU_B moved to 1.0880 break.
+# GBPUSD fell to 1.3021 one-year low, through GU_A zone/invalidation -> GU_A removed.
 
-PLAN ver=2026W48-01 week=2026-W48 made=2026-11-23T02:45 expires=2026-11-30T00:00 flat=2026-11-27T17:30 note=USD_trend_mature_and_crowded._Wed_PCE_decides._Thin_holiday_liquidity_Thu-Fri.
+PLAN ver=2026W48-02 week=2026-W48 made=2026-11-23T02:45 expires=2026-11-30T00:00 flat=2026-11-27T17:30 note=USD_trend_mature_and_crowded._Wed_PCE_decides._Thin_holiday_liquidity_Thu-Fri. upd=2026-11-24T06:25
 
 # Risk: % per trade, weekly stop %, max new trades per day, news filter, spread filter
 RISK pct=0.5 weekstop=2.0 maxday=3 news=HIGH newsmin=15 spreadx=3
@@ -40,8 +42,7 @@ TRIGGER id=AUCPI track=AUD country=AU match=cpi+y/y+~trimmed+~mean+~weighted sof
 # inv + invtf = candle close that kills the idea. tp1 = take half and move stop to entry.
 # If tp1/tp2 are missing, the EA uses 1.5R and 3R.
 SETUP id=EU_A track=USD scen=SOFT sym=EURUSD dir=BUY trig=BREAK lvl=1.1000 inv=1.0953 invtf=H4 tp1=1.1035 tp2=1.1090 grp=USDSHORT rm=1 window=24
-SETUP id=EU_B track=USD scen=HOT sym=EURUSD dir=SELL trig=BREAK lvl=1.0953 inv=1.1000 invtf=H4 tp1=1.0900 tp2=1.0850 grp=USDLONG rm=1 window=24
-SETUP id=GU_A track=USD scen=BASE,SOFT,INLINE sym=GBPUSD dir=BUY trig=REJECT zlo=1.3080 zhi=1.3110 inv=1.3100 invtf=D1 tp1=1.3200 tp2=1.3300 grp=USDSHORT rm=1 window=24
+SETUP id=EU_B track=USD scen=HOT sym=EURUSD dir=SELL trig=BREAK lvl=1.0880 inv=1.0953 invtf=H4 tp1=1.0750 tp2=1.0620 grp=USDLONG rm=1 window=24
 SETUP id=UJ_S track=USD scen=ALL sym=USDJPY dir=SELL trig=REJECT zlo=159.80 zhi=160.50 inv=160.60 invtf=H1 tp1=158.80 tp2=157.50 grp=JPY rm=0.5 window=24
 SETUP id=XAU_L track=USD scen=BASE,SOFT,INLINE sym=XAUUSD dir=BUY trig=REJECT zlo=3447 zhi=3500 inv=3440 invtf=D1 tp1=3650 tp2=3750 grp=USDSHORT rm=1 hold=48 window=24
 SETUP id=UC_L track=USD scen=BASE,INLINE,HOT sym=USDCAD dir=BUY trig=REJECT zlo=1.4280 zhi=1.4310 inv=1.4250 invtf=H4 tp1=1.4400 tp2=1.4480 grp=USDLONG rm=0.5 window=24
