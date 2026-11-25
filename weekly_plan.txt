@@ -8,8 +8,10 @@
 # Thursday, early close Friday = thin liquidity, small size.
 # Upd 24 Nov: EURUSD broke 1.0953 to 2026 low 1.0884 (France PMI) -> EU_B moved to 1.0880 break.
 # GBPUSD fell to 1.3021 one-year low, through GU_A zone/invalidation -> GU_A removed.
+# Upd 25 Nov: AU Oct CPI 4.9% y/y (consensus 4.7-4.8%), inside 4.7/5.1 band -> AUD track INLINE.
+# Trimmed mean 3.8% vs 3.6% exp; AUD jumped. AU_L/AU_S unchanged (both stay inactive under INLINE).
 
-PLAN ver=2026W48-02 week=2026-W48 made=2026-11-23T02:45 expires=2026-11-30T00:00 flat=2026-11-27T17:30 note=USD_trend_mature_and_crowded._Wed_PCE_decides._Thin_holiday_liquidity_Thu-Fri. upd=2026-11-24T06:25
+PLAN ver=2026W48-03 week=2026-W48 made=2026-11-23T02:45 expires=2026-11-30T00:00 flat=2026-11-27T17:30 note=USD_trend_mature_and_crowded._Wed_PCE_decides._Thin_holiday_liquidity_Thu-Fri. upd=2026-11-25T00:55
 
 # Risk: % per trade, weekly stop %, max new trades per day, news filter, spread filter
 RISK pct=0.5 weekstop=2.0 maxday=3 news=HIGH newsmin=15 spreadx=3
@@ -29,7 +31,7 @@ DAY date=2026-11-27 mult=0.25 max=1
 
 # Scenario tracks. BASE = before the data. The EA switches them itself from the MT5 calendar.
 TRACK name=USD active=BASE
-TRACK name=AUD active=BASE
+TRACK name=AUD active=INLINE
 
 # Calendar triggers: the EA reads the actual value and switches the track.
 # match: words that must all be in the event name ('+' joins, '~' = must NOT contain)
